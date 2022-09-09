@@ -1,7 +1,8 @@
+// ignore_for_file: non_constant_identifier_names
 /*
  * @Author: Beoyan
  * @Date: 2022-09-08 09:25:53
- * @LastEditTime: 2022-09-08 09:27:16
+ * @LastEditTime: 2022-09-08 13:19:19
  * @LastEditors: Beoyan
  * @Description: 
  */
@@ -74,9 +75,7 @@ class Ortc {
 
     // channels is optional. If unset, set it to 1 (just if audio).
     if (codec.kind == RTCRtpMediaType.RTCRtpMediaTypeAudio) {
-      if (codec.channels == null) {
-        codec.channels = 1;
-      }
+      codec.channels ??= 1;
     } else {
       codec.channels = null;
     }
@@ -146,14 +145,10 @@ class Ortc {
     }
 
     // preferredEncrypt is optional. If unset set it to false.
-    if (ext.preferredEncrypt == null) {
-      ext.preferredEncrypt = false;
-    }
+    ext.preferredEncrypt ??= false;
 
     // direction is optional. If unset set it to sendrecv.
-    if (ext.direction == null) {
-      ext.direction = RtpHeaderDirection.SendRecv;
-    }
+    ext.direction ??= RtpHeaderDirection.sendOnly;
   }
 
   /// Validates RtpCapabilities. It may modify given data by adding missing
@@ -210,9 +205,7 @@ class Ortc {
     }
 
     // encrypt is optional. If unset set it to false.
-    if (ext.encrypt == null) {
-      ext.encrypt = false;
-    }
+    ext.encrypt ??= false;
 
     // // parameters is optional. If unset, set it to an empty object.
     // if (ext.parameters == null) {
@@ -249,9 +242,7 @@ class Ortc {
     }
 
     // dtx is optional. If unset set it to false.
-    if (encoding.dtx == null) {
-      encoding.dtx = false;
-    }
+    encoding.dtx ??= false;
   }
 
   /// Validates RtcpParameters. It may modify given data by adding missing
@@ -263,9 +254,7 @@ class Ortc {
     }
 
     // reducedSize is optional. If unset set it to true.
-    if (rtcp.reducedSize == null) {
-      rtcp.reducedSize = true;
-    }
+    rtcp.reducedSize ??= true ;
   }
 
   /// Validates RtpCodecParameters. It may modify given data by adding missing
@@ -306,9 +295,7 @@ class Ortc {
 
     // channels is optional. If unset, set it to 1 (just if audio).
     if (kind == RTCRtpMediaType.RTCRtpMediaTypeAudio) {
-      if (codec.channels == null) {
-        codec.channels = 1;
-      }
+      codec.channels ??= 1;
     } else {
       codec.channels = null;
     }
@@ -380,9 +367,7 @@ class Ortc {
     }
 
     // rtcp is optional. If unset, fill with an empty object.
-    if (params.rtcp == null) {
-      params.rtcp = RtcpParameters(reducedSize: true, cname: '', mux: false);
-    }
+    params.rtcp ??= RtcpParameters(reducedSize: true, cname: '', mux: false);
 
     validateRtcpParameters(params.rtcp);
   }
@@ -701,21 +686,21 @@ class Ortc {
         sendId: matchingLocalExt.preferredId!,
         recvId: remoteExt.preferredId!,
         encrypt: matchingLocalExt.preferredEncrypt!,
-        direction: RtpHeaderDirection.SendRecv,
+        direction: RtpHeaderDirection.sendRecv,
       );
 
       switch (remoteExt.direction) {
-        case RtpHeaderDirection.SendRecv:
-          extendedExt.direction = RtpHeaderDirection.SendRecv;
+        case RtpHeaderDirection.sendRecv:
+          extendedExt.direction = RtpHeaderDirection.sendRecv;
           break;
-        case RtpHeaderDirection.RecvOnly:
-          extendedExt.direction = RtpHeaderDirection.SendOnly;
+        case RtpHeaderDirection.recvOnly:
+          extendedExt.direction = RtpHeaderDirection.sendOnly;
           break;
-        case RtpHeaderDirection.SendOnly:
-          extendedExt.direction = RtpHeaderDirection.RecvOnly;
+        case RtpHeaderDirection.sendOnly:
+          extendedExt.direction = RtpHeaderDirection.recvOnly;
           break;
-        case RtpHeaderDirection.Inactive:
-          extendedExt.direction = RtpHeaderDirection.Inactive;
+        case RtpHeaderDirection.inactive:
+          extendedExt.direction = RtpHeaderDirection.inactive;
           break;
         default:
           break;
@@ -844,8 +829,8 @@ class Ortc {
         in extendedRtpCapabilities.headerExtensions) {
       // Ignore RTP extensions of a different kind and those not valid for sending.
       if ((extendedExtension.kind != null && extendedExtension.kind != kind) ||
-          (extendedExtension.direction != RtpHeaderDirection.SendRecv &&
-              extendedExtension.direction != RtpHeaderDirection.SendOnly)) {
+          (extendedExtension.direction != RtpHeaderDirection.sendRecv &&
+              extendedExtension.direction != RtpHeaderDirection.sendOnly)) {
         continue;
       }
 
@@ -936,8 +921,8 @@ class Ortc {
     for (ExtendedRtpHeaderExtension extendedExtension
         in extendedRtpCapabilities.headerExtensions) {
       // Ignore RTP extensions not valid for receiving.
-      if (extendedExtension.direction != RtpHeaderDirection.SendRecv &&
-          extendedExtension.direction != RtpHeaderDirection.RecvOnly) {
+      if (extendedExtension.direction != RtpHeaderDirection.sendRecv &&
+          extendedExtension.direction != RtpHeaderDirection.recvOnly) {
         continue;
       }
 
@@ -1005,8 +990,8 @@ class Ortc {
         in extendedRtpCapabilities.headerExtensions) {
       // Ignore RTP extensions of a different kind and those not valid for sending.
       if ((extendedExtension.kind != null && extendedExtension.kind != kind) ||
-          (extendedExtension.direction != RtpHeaderDirection.SendRecv &&
-              extendedExtension.direction != RtpHeaderDirection.SendOnly)) {
+          (extendedExtension.direction != RtpHeaderDirection.sendRecv &&
+              extendedExtension.direction != RtpHeaderDirection.sendOnly)) {
         continue;
       }
 

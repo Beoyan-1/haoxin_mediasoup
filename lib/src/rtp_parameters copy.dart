@@ -1,7 +1,7 @@
 /*
  * @Author: Beoyan
  * @Date: 2022-09-08 09:26:24
- * @LastEditTime: 2022-09-08 09:26:25
+ * @LastEditTime: 2022-09-08 13:21:58
  * @LastEditors: Beoyan
  * @Description: 
  */
@@ -45,14 +45,10 @@ class RtpCapabilities {
     List<String>? fecMechanisms,
   }) {
     return RtpCapabilities(
-      codecs:
-          codecs != null ? codecs : List<RtpCodecCapability>.from(old.codecs),
-      headerExtensions: headerExtensions != null
-          ? headerExtensions
-          : List<RtpHeaderExtension>.from(old.headerExtensions),
-      fecMechanisms: fecMechanisms != null
-          ? fecMechanisms
-          : List<String>.from(old.fecMechanisms),
+      codecs: codecs ?? List<RtpCodecCapability>.from(old.codecs),
+      headerExtensions: headerExtensions ??
+          List<RtpHeaderExtension>.from(old.headerExtensions),
+      fecMechanisms: fecMechanisms ?? List<String>.from(old.fecMechanisms),
     );
   }
 
@@ -65,25 +61,25 @@ class RtpCapabilities {
 
 ///Direction of RTP header extension.
 enum RtpHeaderDirection {
-  SendRecv,
-  SendOnly,
-  RecvOnly,
-  Inactive,
+  sendRecv,
+  sendOnly,
+  recvOnly,
+  inactive,
 }
 
 extension RtpHeaderDirectionExtension on RtpHeaderDirection {
   static const Map<String, RtpHeaderDirection> types = {
-    'sendrecv': RtpHeaderDirection.SendRecv,
-    'sendonly': RtpHeaderDirection.SendOnly,
-    'recvonly': RtpHeaderDirection.RecvOnly,
-    'inactive': RtpHeaderDirection.Inactive,
+    'sendrecv': RtpHeaderDirection.sendRecv,
+    'sendonly': RtpHeaderDirection.sendOnly,
+    'recvonly': RtpHeaderDirection.recvOnly,
+    'inactive': RtpHeaderDirection.inactive,
   };
 
   static const Map<RtpHeaderDirection, String> values = {
-    RtpHeaderDirection.SendRecv: 'sendrecv',
-    RtpHeaderDirection.SendOnly: 'sendonly',
-    RtpHeaderDirection.RecvOnly: 'recvonly',
-    RtpHeaderDirection.Inactive: 'inactive',
+    RtpHeaderDirection.sendRecv: 'sendrecv',
+    RtpHeaderDirection.sendOnly: 'sendonly',
+    RtpHeaderDirection.recvOnly: 'recvonly',
+    RtpHeaderDirection.inactive: 'inactive',
   };
 
   static RtpHeaderDirection fromString(String type) => types[type]!;
@@ -130,8 +126,8 @@ class RtcpFeedback {
 
   Map<String, String> toMap() {
     return {
-      'type': this.type,
-      'parameter': this.parameter,
+      'type': type,
+      'parameter': parameter,
     };
   }
 }
@@ -745,20 +741,12 @@ class RtpParameters {
     RtcpParameters? rtcp,
   }) {
     return RtpParameters(
-      codecs:
-          codecs != null ? codecs : List<RtpCodecParameters>.from(old.codecs),
-      encodings: encodings != null
-          ? encodings
-          : List<RtpEncodingParameters>.from(old.encodings),
-      headerExtensions: headerExtensions != null
-          ? headerExtensions
-          : List<RtpHeaderExtensionParameters>.from(old.headerExtensions!),
+      codecs: codecs ?? List<RtpCodecParameters>.from(old.codecs),
+      encodings: encodings ?? List<RtpEncodingParameters>.from(old.encodings),
+      headerExtensions: headerExtensions ??
+          List<RtpHeaderExtensionParameters>.from(old.headerExtensions!),
       mid: mid ?? old.mid,
-      rtcp: rtcp != null
-          ? rtcp
-          : old.rtcp != null
-              ? RtcpParameters.copy(old.rtcp!)
-              : null,
+      rtcp: rtcp ?? (old.rtcp != null ? RtcpParameters.copy(old.rtcp!) : null),
     );
   }
 
@@ -813,9 +801,9 @@ class RtcpParameters extends RTCRTCPParameters {
     bool? reducedSize,
   }) {
     return RtcpParameters(
-      mux: mux != null ? mux : old.mux,
-      cname: cname != null ? cname : old.cname,
-      reducedSize: reducedSize != null ? reducedSize : old.reducedSize,
+      mux: mux ?? old.mux,
+      cname: cname ?? old.cname,
+      reducedSize: reducedSize ?? old.reducedSize,
     );
   }
 

@@ -1,7 +1,7 @@
 /*
  * @Author: Beoyan
  * @Date: 2022-09-08 09:25:58
- * @LastEditTime: 2022-09-08 09:25:59
+ * @LastEditTime: 2022-09-08 10:51:42
  * @LastEditors: Beoyan
  * @Description: 
  */
@@ -411,9 +411,11 @@ class Producer extends EnhancedEventEmitter {
 
   /// Sets the video max spatial layer to be sent.
   Future<void> setMaxSpatialLayer(int spatialLayer) async {
-    if (closed)
+    if (closed) {
       throw 'closed';
-    else if (kind != 'video') throw 'not a video Producer';
+    } else if (kind != 'video') {
+      throw 'not a video Producer';
+    }
 
     if (spatialLayer == maxSpatialLayer) return;
 
@@ -426,9 +428,11 @@ class Producer extends EnhancedEventEmitter {
 
   /// Sets the DSCP value.
   Future<void> setRtpEncodingParameters(RtpEncodingParameters params) async {
-    if (closed)
+    if (closed) {
       throw 'closed';
-    else if (params == null) throw 'invalid params';
+    } else if (params == null) {
+      throw 'invalid params';
+    }
 
     await safeEmitAsFuture('@setrtpencodingparameters', {
       'params': params,

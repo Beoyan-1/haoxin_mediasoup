@@ -1,5 +1,3 @@
-
-
 import 'package:haoxin_mediasoup/src/producer.dart';
 import 'package:haoxin_mediasoup/src/rtp_parameters.dart';
 import 'package:haoxin_mediasoup/src/sctp_parameters.dart';
@@ -917,7 +915,7 @@ abstract class MediaSection {
   }
 
   void disable() {
-    _mediaObject.direction = RtpHeaderDirection.Inactive;
+    _mediaObject.direction = RtpHeaderDirection.inactive;
 
     _mediaObject.ext = null;
     _mediaObject.ssrcs = null;
@@ -928,7 +926,7 @@ abstract class MediaSection {
   }
 
   void close() {
-    _mediaObject.direction = RtpHeaderDirection.Inactive;
+    _mediaObject.direction = RtpHeaderDirection.inactive;
 
     _mediaObject.port = 0;
 
@@ -983,7 +981,7 @@ class AnswerMediaSection extends MediaSection {
       case 'audio':
       case 'video':
         {
-          _mediaObject.direction = RtpHeaderDirection.RecvOnly;
+          _mediaObject.direction = RtpHeaderDirection.recvOnly;
           _mediaObject.rtp = <Rtp>[];
           _mediaObject.rtcpFb = <RtcpFb>[];
           _mediaObject.fmtp = <Fmtp>[];
@@ -1310,7 +1308,7 @@ class OfferMediaSection extends MediaSection {
       case 'audio':
       case 'video':
         {
-          _mediaObject.direction = RtpHeaderDirection.SendOnly;
+          _mediaObject.direction = RtpHeaderDirection.sendOnly;
           _mediaObject.rtp = <Rtp>[];
           _mediaObject.rtcpFb = <RtcpFb>[];
           _mediaObject.fmtp = <Fmtp>[];

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 abstract class FlexTask {
   final String? id;
   final Function execFun;
@@ -91,8 +93,12 @@ class FlexQueue {
             task.callbackFun?.call(result);
           }
         } catch (error, st) {
-          print(error);
-          print(st);
+          if (kDebugMode) {
+            print(error);
+          }
+          if (kDebugMode) {
+            print(st);
+          }
           task.errorCallbackFun?.call(error);
         } finally {
           isBusy = false;

@@ -7,9 +7,9 @@ import 'package:haoxin_mediasoup/src/rtp_parameters.dart';
 import 'package:haoxin_mediasoup/src/sctp_parameters.dart';
 import 'package:haoxin_mediasoup/src/transport.dart';
 
-class SCTP_NUM_STREAMS {
-  static const int OS = 1024;
-  static const int MIS = 1024;
+class SCTPNUMSTREAMS {
+  static const int os = 1024;
+  static const int mis = 1024;
 }
 
 class RTCOAuthCredential {

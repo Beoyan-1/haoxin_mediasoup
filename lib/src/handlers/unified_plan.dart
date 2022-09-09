@@ -145,8 +145,8 @@ class UnifiedPlan extends HandlerInterface {
 
     return SctpCapabilities(
         numStreams: NumSctpStreams(
-      mis: SCTP_NUM_STREAMS.MIS,
-      os: SCTP_NUM_STREAMS.OS,
+      mis: SCTPNUMSTREAMS.mis,
+      os: SCTPNUMSTREAMS.os,
     ));
   }
 
@@ -706,7 +706,7 @@ class UnifiedPlan extends HandlerInterface {
         await _pc!.createDataChannel(options.label!, initOptions);
 
     // Increase next id.
-    _nextSendSctpStreamId = ++_nextSendSctpStreamId % SCTP_NUM_STREAMS.MIS;
+    _nextSendSctpStreamId = ++_nextSendSctpStreamId % SCTPNUMSTREAMS.mis;
 
     // If this is the first DataChannel we need to create the SDP answer with
     // m=application section.

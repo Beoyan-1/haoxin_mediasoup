@@ -1,7 +1,9 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 /*
  * @Author: Beoyan
  * @Date: 2022-09-08 09:23:46
- * @LastEditTime: 2022-09-08 09:33:14
+ * @LastEditTime: 2022-09-08 10:41:29
  * @LastEditors: Beoyan
  * @Description: 
  */
@@ -383,7 +385,7 @@ class PlainRtpParameters {
     required this.ip,
     required this.port,
     required int ipVersion,
-  })  : this._ipVersion = ipVersion,
+  })  : _ipVersion = ipVersion,
         assert(ipVersion != 4 || ipVersion != 6, 'Only 4 or 6');
 }
 
@@ -462,41 +464,41 @@ class Transport extends EnhancedEventEmitter {
   late Map<String, dynamic> _appData;
 
   // Map of Producers indexed by id.
-  Map<String, Producer> _producers = <String, Producer>{};
+  final Map<String, Producer> _producers = <String, Producer>{};
 
   // Map of Consumers indexed by id.
-  Map<String, Consumer> _consumers = <String, Consumer>{};
+  final Map<String, Consumer> _consumers = <String, Consumer>{};
 
   // Map of DataProducers indexed by id.
-  Map<String, DataProducer> _dataProducers = <String, DataProducer>{};
+  final Map<String, DataProducer> _dataProducers = <String, DataProducer>{};
 
   // Map of DataConsumers indexed by id.
-  Map<String, DataConsumer> _dataConsumers = <String, DataConsumer>{};
+  final Map<String, DataConsumer> _dataConsumers = <String, DataConsumer>{};
 
   // Whether the Consumer for RTP probation has been created.
   bool _probatorConsumerCreated = false;
 
   // FlexQueue instance to make async tasks happen sequentially.
-  FlexQueue _flexQueue = FlexQueue();
+  final FlexQueue _flexQueue = FlexQueue();
 
   // Observer instance.
-  EnhancedEventEmitter _observer = EnhancedEventEmitter();
+  final EnhancedEventEmitter _observer = EnhancedEventEmitter();
 
   Function? producerCallback;
   Function? consumerCallback;
   Function? dataProducerCallback;
   Function? dataConsumerCallback;
   // Consumers pending to be paused.
-  Map<String, Consumer> _pendingPauseConsumers = <String, Consumer>{};
+  final Map<String, Consumer> _pendingPauseConsumers = <String, Consumer>{};
   // Consumer pause in progress flag.
   bool _consumerPauseInProgress = false;
   // Consumers pending to be resumed.
-  Map<String, Consumer> _pendingResumeConsumers = <String, Consumer>{};
+  final Map<String, Consumer> _pendingResumeConsumers = <String, Consumer>{};
 
   // Consumer resume in progress flag.
   bool _consumerResumeInProgress = false;
   // Consumers pending to be closed.
-  Map<String, Consumer> _pendingCloseConsumers = <String, Consumer>{};
+  final Map<String, Consumer> _pendingCloseConsumers = <String, Consumer>{};
   // Consumer close in progress flag.
   bool _consumerCloseInProgress = false;
 
@@ -529,8 +531,7 @@ class Transport extends EnhancedEventEmitter {
     _direction = direction;
     _extendedRtpCapabilities = extendedRtpCapabilities;
     _canProduceByKind = canProduceByKind;
-    _maxSctpMessageSize =
-        sctpParameters != null ? sctpParameters.maxMessageSize : null;
+    _maxSctpMessageSize = sctpParameters?.maxMessageSize;
 
     // Clone and sanitize additionalSettings.
     additionalSettings = Map<String, dynamic>.of(additionalSettings);
@@ -696,9 +697,12 @@ class Transport extends EnhancedEventEmitter {
   void restartIce(IceParameters iceParameters) {
     _logger.debug('restartIce()');
 
-    if (this._closed)
+    if (_closed) {
       throw ('closed');
-    else if (iceParameters == null) throw ('missing iceParameters');
+    // ignore: unnecessary_null_comparison
+    } else if (iceParameters == null) {
+      throw ('missing iceParameters');
+    }
 
     // Enqueue command.
     _flexQueue.addTask(FlexTaskAdd(
@@ -713,9 +717,12 @@ class Transport extends EnhancedEventEmitter {
   void updateIceServers(List<RTCIceServer> iceServers) {
     _logger.debug('updateIceServers()');
 
-    if (this._closed)
+    if (_closed) {
       throw ('closed');
-    else if (iceServers == null) throw ('missing iceServers');
+    // ignore: unnecessary_null_comparison
+    } else if (iceServers == null) {
+      throw ('missing iceServers');
+    }
 
     _flexQueue.addTask(FlexTaskAdd(
       id: '',
@@ -839,7 +846,7 @@ class Transport extends EnhancedEventEmitter {
       _pendingCloseConsumers[consumer.id] = consumer;
 
       // There is no Consumer close in progress, do it now.
-      if (this._consumerCloseInProgress == false) {
+      if (_consumerCloseInProgress == false) {
         _flexQueue.addTask(FlexTaskRemove(
           id: consumer.id,
           execFun: _closePendingConsumers,
@@ -850,13 +857,13 @@ class Transport extends EnhancedEventEmitter {
 
     consumer.on('@pause', () {
       // If Consumer is pending to be resumed, remove from pending resume list.
-      if (this._pendingResumeConsumers.containsKey(consumer.id)) {
-        this._pendingResumeConsumers.remove(consumer.id);
+      if (_pendingResumeConsumers.containsKey(consumer.id)) {
+        _pendingResumeConsumers.remove(consumer.id);
       }
       // Store the Consumer into the pending list.
-      this._pendingPauseConsumers[consumer.id] = consumer;
+      _pendingPauseConsumers[consumer.id] = consumer;
       // There is no Consumer pause in progress, do it now.
-      if (this._consumerPauseInProgress == false) {
+      if (_consumerPauseInProgress == false) {
         _flexQueue.addTask(
           FlexTaskAdd(
             id: '',
@@ -869,13 +876,13 @@ class Transport extends EnhancedEventEmitter {
 
     consumer.on('@resume', () {
       // If Consumer is pending to be resumed, remove from pending resume list.
-      if (this._pendingPauseConsumers.containsKey(consumer.id)) {
-        this._pendingPauseConsumers.remove(consumer.id);
+      if (_pendingPauseConsumers.containsKey(consumer.id)) {
+        _pendingPauseConsumers.remove(consumer.id);
       }
       // Store the Consumer into the pending list.
-      this._pendingResumeConsumers[consumer.id] = consumer;
+      _pendingResumeConsumers[consumer.id] = consumer;
       // There is no Consumer pause in progress, do it now.
-      if (this._consumerResumeInProgress == false) {
+      if (_consumerResumeInProgress == false) {
         _flexQueue.addTask(
           FlexTaskAdd(
             id: '',
@@ -901,19 +908,19 @@ class Transport extends EnhancedEventEmitter {
   }
 
   _pausePendingConsumers() async {
-    this._consumerPauseInProgress = true;
+    _consumerPauseInProgress = true;
 
-    if (this._pendingPauseConsumers.length == 0) {
+    if (_pendingPauseConsumers.isEmpty) {
       _logger.debug(
           '_pausePendingConsumers() | there is no Consumer to be paused');
       return;
     }
 
     List<Consumer> pendingPauseConsumers =
-        this._pendingPauseConsumers.values.toList();
+        _pendingPauseConsumers.values.toList();
 
     // Clear pending pause Consumer map.
-    this._pendingPauseConsumers.clear();
+    _pendingPauseConsumers.clear();
     try {
       List<String> localIds =
           pendingPauseConsumers.map((consumer) => consumer.localId).toList();
@@ -922,28 +929,28 @@ class Transport extends EnhancedEventEmitter {
       _logger
           .error('_pausePendingConsumers() | failed to pause Consumers:$error');
     }
-    this._consumerPauseInProgress = false;
+    _consumerPauseInProgress = false;
     // There are pending Consumers to be paused, do it.
-    if (this._pendingPauseConsumers.length > 0) {
-      this._pausePendingConsumers();
+    if (_pendingPauseConsumers.isNotEmpty) {
+      _pausePendingConsumers();
     }
   }
 
   //恢复消费者
   _resumePendingConsumers() async {
-    this._consumerResumeInProgress = true;
+    _consumerResumeInProgress = true;
 
-    if (this._pendingResumeConsumers.length == 0) {
+    if (_pendingResumeConsumers.isEmpty) {
       _logger.debug(
           '_pausePendingConsumers() | there is no Consumer to be paused');
       return;
     }
 
     List<Consumer> pendingResumeConsumers =
-        this._pendingResumeConsumers.values.toList();
+        _pendingResumeConsumers.values.toList();
 
     // Clear pending pause Consumer map.
-    this._pendingResumeConsumers.clear();
+    _pendingResumeConsumers.clear();
     try {
       List<String> localIds =
           pendingResumeConsumers.map((consumer) => consumer.localId).toList();
@@ -952,37 +959,37 @@ class Transport extends EnhancedEventEmitter {
       _logger
           .error('_pausePendingConsumers() | failed to pause Consumers:$error');
     }
-    this._consumerResumeInProgress = false;
+    _consumerResumeInProgress = false;
     // There are pending Consumers to be paused, do it.
-    if (this._pendingResumeConsumers.length > 0) {
-      this._resumePendingConsumers();
+    if (_pendingResumeConsumers.isNotEmpty) {
+      _resumePendingConsumers();
     }
   }
 
   _closePendingConsumers() async {
     _consumerCloseInProgress = true;
-    if (this._pendingCloseConsumers.length == 0) {
+    if (_pendingCloseConsumers.isEmpty) {
       _logger.debug(
           '_closePendingConsumers() | there is no Consumer to be closed');
       return;
     }
 
     List<Consumer> pendingCloseConsumers =
-        this._pendingCloseConsumers.values.toList();
+        _pendingCloseConsumers.values.toList();
 
     // Clear pending close Consumer map.
-    this._pendingCloseConsumers.clear();
+    _pendingCloseConsumers.clear();
     try {
       List<String> localIds =
           pendingCloseConsumers.map((consumer) => consumer.localId).toList();
-      await this._handler.stopReceiving(localIds);
+      await _handler.stopReceiving(localIds);
     } catch (error) {
       _logger
           .error('_closePendingConsumers() | failed to close Consumers:$error');
     }
     _consumerCloseInProgress = false;
     // There are pending Consumer to be resumed, do it.
-    if (_pendingCloseConsumers.length > 0) {
+    if (_pendingCloseConsumers.isNotEmpty) {
       _closePendingConsumers();
     }
   }
@@ -1267,7 +1274,7 @@ class Transport extends EnhancedEventEmitter {
     bool ordered = true,
     int maxPacketLife = 0,
     required int maxRetransmits,
-    Priority priority = Priority.Low,
+    Priority priority = Priority.low,
     String label = '',
     String protocol = '',
     Map<String, dynamic> appData = const <String, dynamic>{},
